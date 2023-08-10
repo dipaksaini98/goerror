@@ -80,7 +80,7 @@ func TestWrap(t *testing.T) {
 		{
 			name: "two level wrapped error",
 			args: args{
-				err: Wrap(New("original error", nil, false, nil), "child error", nil),
+				err: Wrap(New("original error", nil, false, nil), "child error", nil, false, nil),
 				msg: "child error 2",
 			},
 		},
@@ -94,7 +94,7 @@ func TestWrap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Wrap(tt.args.err, tt.args.msg, nil); err != nil {
+			if err := Wrap(tt.args.err, tt.args.msg, nil, false, nil); err != nil {
 				switch tt.name {
 				case "one level wrapped error":
 					assert.Equal(t, "child error: original error", err.Error())
@@ -138,7 +138,7 @@ func TestWrapWithCustomErrorType(t *testing.T) {
 		{
 			name: "two level wrapped error",
 			args: args{
-				err: Wrap(New("original error", &CustomType, false, nil), "child error", &CustomType),
+				err: Wrap(New("original error", &CustomType, false, nil), "child error", &CustomType, false, nil),
 				msg: "child error 2",
 			},
 			wantErr: false,
@@ -146,7 +146,7 @@ func TestWrapWithCustomErrorType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Wrap(tt.args.err, tt.args.msg, nil); (err != nil) != tt.wantErr {
+			if err := Wrap(tt.args.err, tt.args.msg, nil, false, nil); (err != nil) != tt.wantErr {
 				switch tt.name {
 				case "one level wrapped error":
 					assert.Equal(t, "child error: original error", err.Error())

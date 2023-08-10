@@ -2,7 +2,6 @@ package goerror
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Type is the type of an error
@@ -27,10 +26,12 @@ var (
 
 // new creates a new custom error object
 func (errType Type) new(msg string, display bool, context *context) error {
-	return &goError{errorType: errType, originalError: errors.New(msg), display: display}
+	return &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
 }
 
 // wrap wraps context with an error object
-func (errType Type) wrap(err error, msg string) error {
-	return &goError{errorType: errType, originalError: fmt.Errorf(fmt.Sprintf("%s: %s", msg, "%w"), err)}
+func (errType Type) wrap(err error, msg string, display bool, context *context) error {
+	trace := err.(*goError).trace
+	trace = append(trace, err)
+	return &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context, trace: trace}
 }

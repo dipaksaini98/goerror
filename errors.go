@@ -9,6 +9,7 @@ type goError struct {
 	originalError error
 	context       context
 	display       bool
+	trace         []error
 }
 
 type context struct {
@@ -42,11 +43,11 @@ func New(msg string, errorType *Type, display bool, context *context) error {
 }
 
 // Wrap wraps an error
-func Wrap(err error, msg string, errorType *Type) error {
+func Wrap(err error, msg string, errorType *Type, display bool, context *context) error {
 	if errorType != nil {
-		return errorType.wrap(err, msg)
+		return errorType.wrap(err, msg, display, context)
 	}
-	return NoType.wrap(err, msg)
+	return NoType.wrap(err, msg, display, context)
 }
 
 // Unwrap unwraps an error

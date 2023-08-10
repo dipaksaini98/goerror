@@ -22,16 +22,20 @@ var (
 	PermissionDenied Type = "PermissionDenied"
 	// SomethingWentWrong indicates that server has encountered a situation it doesn't know how to handle
 	SomethingWentWrong Type = "SomethingWentWrong"
+	// InternalServerError indicates that server has encountered a situation it doesn't know how to handle
+	InternalServerError Type = "InternalServerError"
 )
 
 // new creates a new custom error object
 func (errType Type) new(msg string, display bool, context *context) error {
-	return &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
+	err := &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
+	err.trace = append(err.trace, err)
+	return err
 }
 
 // wrap wraps context with an error object
 func (errType Type) wrap(err error, msg string, display bool, context *context) error {
-	trace := err.(*goError).trace
-	trace = append(trace, err)
-	return &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context, trace: trace}
+	newErr := &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
+	err.(*goError).trace = append(err.(*goError).trace, newErr)
+	return err
 }

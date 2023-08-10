@@ -1,7 +1,7 @@
 # goError
 
   
-**goError** is a simple and pluggable go package allows you to create and handle errors in golang more efficiently & gracefully, also allowing you to preserve the context of every error. 
+**goError** is a simple and pluggable Go package that allows developers to create and handle errors in Go more efficiently and gracefully, while also preserving the context of every error. 
 
 
 ## Why use this package? 
@@ -9,19 +9,19 @@
  - Plug and Play (compatible with existing go [errors](https://golang.org/pkg/errors/) package)
  - Allows you to specify error types
  - Easy conversion of error into Map or JSON.
- - Add context to error for passing the human readable error message to client side applications.
- - Wrap and Unwrap error stack. 
+ - Add context to error for passing the human-readable error message to client-side applications.
+ - Wraps and unwraps error stack. 
 
 ## Documentation
 
-Let's look at the some code snippets. But before this, make sure to download the package using
+Let's look at some code snippets. But before this, make sure to download the package using
 
-    go get -v github.com/vasupal1996/goerror
+    go get -v github.com/dipaksaini98/goerror
    
    and import the package as
 
     import  (
-	    errors "github.com/vasupal1996/goerror"
+	    errors "github.com/dipaksaini98/goerror"
     )
 
 ### Create error
@@ -30,27 +30,27 @@ Syntax:
 	New(message string, error_type Type) error
 
 
- #### 1. Create an error without error type
+ #### 1. Create an error without an error type
 
 
 Example:
 
     err := errors.New("error message", nil)
     fmt.Println(err)
-    >> error message
+    >> Error message
 
 > Note: when you don't specify any error type *NoType* is set by default.
 
-#### 2. Create an error with error type
+#### 2. Create an error with an error type
 
 Example:
 	
 
     err :=  errors.New("error message", &errors.BadRequest)
     fmt.Println(err)
-    >> error message
+    >> Error message
 
-### Add context to error
+### Add context to an error
 
 Syntax:
 
@@ -107,7 +107,7 @@ Example:
 
     errType :=  errors.GetType(err)
 
-### Create custom error type
+### Create a custom error type
 
 Example:
 
@@ -189,4 +189,4 @@ Example:
 	errJSON = errors.JSON(err1)
 	
 	fmt.Println(string(errJSON))
-	>> {"field":"email","message":"email not found","type":"NoType"}
+	>> {"field": "email", "message": "email not found", "type": "NoType"}

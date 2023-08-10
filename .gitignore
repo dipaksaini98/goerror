@@ -1,0 +1,9 @@
+.vscode
+conf/*.toml
+static
+main
+CancelledShipments.txt
+*.DS_Store
+*.pem
+*.srl
+go.sum

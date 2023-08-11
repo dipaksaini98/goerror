@@ -4,7 +4,7 @@ import "encoding/json"
 
 // Map object of the error
 func Map(err error) map[string]interface{} {
-	emptyCtx := Context{}
+	emptyCtx := context{}
 	var errMap = make(map[string]interface{})
 	if customErr, ok := err.(*goError); ok && customErr.context != emptyCtx {
 		errMap["field"] = customErr.context.Key

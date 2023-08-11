@@ -7,12 +7,12 @@ import (
 type goError struct {
 	errorType     Type
 	originalError error
-	context       Context
+	context       context
 	display       bool
 	trace         []error
 }
 
-type Context struct {
+type context struct {
 	Key   interface{}
 	Value interface{}
 }
@@ -28,7 +28,7 @@ func (e *goError) Unwrap() error {
 }
 
 // New returns new error
-func New(msg string, errorType *Type, display bool, context *Context) error {
+func New(msg string, errorType *Type, display bool, context *context) error {
 	if errorType != nil {
 		if context != nil {
 			return errorType.new(msg, display, context)
@@ -43,7 +43,7 @@ func New(msg string, errorType *Type, display bool, context *Context) error {
 }
 
 // Wrap wraps an error
-func Wrap(err error, msg string, errorType *Type, display bool, context *Context) error {
+func Wrap(err error, msg string, errorType *Type, display bool, context *context) error {
 	if errorType != nil {
 		return errorType.wrap(err, msg, display, context)
 	}
@@ -98,7 +98,7 @@ func GetType(err error) Type {
 
 // SetContext adds context to the error
 func SetContext(err error, key, value interface{}) error {
-	ctx := Context{key, value}
+	ctx := context{key, value}
 	if customErr, ok := err.(*goError); ok {
 		customErr.context = ctx
 		return customErr
@@ -108,7 +108,7 @@ func SetContext(err error, key, value interface{}) error {
 
 // GetContext returns the error context
 func GetContext(err error) map[string]interface{} {
-	emptyCtx := Context{}
+	emptyCtx := context{}
 	if customErr, ok := err.(*goError); ok && customErr.context != emptyCtx {
 		return map[string]interface{}{"field": customErr.context.Key, "message": customErr.context.Value}
 	}

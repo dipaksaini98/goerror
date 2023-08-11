@@ -27,14 +27,14 @@ var (
 )
 
 // new creates a new custom error object
-func (errType Type) new(msg string, display bool, context *Context) error {
+func (errType Type) new(msg string, display bool, context *context) error {
 	err := &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
 	err.trace = append(err.trace, err)
 	return err
 }
 
 // wrap wraps context with an error object
-func (errType Type) wrap(err error, msg string, display bool, context *Context) error {
+func (errType Type) wrap(err error, msg string, display bool, context *context) error {
 	newErr := &goError{errorType: errType, originalError: errors.New(msg), display: display, context: *context}
 	err.(*goError).trace = append(err.(*goError).trace, newErr)
 	return err

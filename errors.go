@@ -28,26 +28,20 @@ func (e *goError) Unwrap() error {
 }
 
 // New returns new error
-func New(msg string, errorType *Type, display bool, context *context) error {
+func New(msg string, errorType *Type, display bool) error {
 	if errorType != nil {
-		if context != nil {
-			return errorType.new(msg, display, context)
-		}
-		return errorType.new(msg, display, nil)
+		return errorType.new(msg, display)
 	} else {
-		if context != nil {
-			return NoType.new(msg, display, context)
-		}
-		return NoType.new(msg, display, nil)
+		return NoType.new(msg, display)
 	}
 }
 
 // Wrap wraps an error
-func Wrap(err error, msg string, errorType *Type, display bool, context *context) error {
+func Wrap(err error, msg string, errorType *Type, display bool) error {
 	if errorType != nil {
-		return errorType.wrap(err, msg, display, context)
+		return errorType.wrap(err, msg, display)
 	}
-	return NoType.wrap(err, msg, display, context)
+	return NoType.wrap(err, msg, display)
 }
 
 // Unwrap unwraps an error

@@ -1,9 +1,5 @@
 package goerror
 
-import (
-	"errors"
-)
-
 // Type is the type of an error
 type Type string
 
@@ -27,15 +23,15 @@ var (
 )
 
 // new creates a new custom error object
-func (errType Type) new(msg string, display bool) error {
-	err := &goError{errorType: errType, originalError: errors.New(msg), display: display}
+func (errType Type) new(systemErr error, msg string, display bool) error {
+	err := &goError{errorType: errType, originalError: systemErr, display: display, message: msg}
 	err.trace = append(err.trace, err)
 	return err
 }
 
 // wrap wraps context with an error object
-func (errType Type) wrap(err error, msg string, display bool) error {
-	newErr := &goError{errorType: errType, originalError: errors.New(msg), display: display}
+func (errType Type) wrap(err error, systemErr error, msg string, display bool) error {
+	newErr := &goError{errorType: errType, originalError: systemErr, display: display, message: msg}
 	err.(*goError).trace = append(err.(*goError).trace, newErr)
 	return err
 }

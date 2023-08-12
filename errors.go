@@ -30,10 +30,14 @@ func (e *goError) Unwrap() error {
 
 // New returns new error
 func New(systemErr error, msg string, errorType *Type, display bool) error {
+	var sysErr error
+	if systemErr != nil {
+		sysErr = systemErr
+	}
 	if errorType != nil {
-		return errorType.new(systemErr, msg, display)
+		return errorType.new(sysErr, msg, display)
 	} else {
-		return NoType.new(systemErr, msg, display)
+		return NoType.new(sysErr, msg, display)
 	}
 }
 

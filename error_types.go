@@ -1,5 +1,7 @@
 package goerror
 
+import "errors"
+
 // Type is the type of an error
 type Type string
 
@@ -24,7 +26,12 @@ var (
 
 // new creates a new custom error object
 func (errType Type) new(systemErr error, msg string, display bool) error {
-	err := &goError{errorType: errType, originalError: systemErr, display: display, message: msg}
+	err := &goError{errorType: errType, display: display, message: msg}
+	if systemErr != nil {
+		err.originalError = systemErr
+	} else {
+		err.originalError = errors.New(msg)
+	}
 	err.trace = append(err.trace, err)
 	return err
 }

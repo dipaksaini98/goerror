@@ -423,7 +423,7 @@ func TestAs(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "goError comparison for no type specified",
+			name: "GoError comparison for no type specified",
 			args: args{
 				err:    New("", "test error", nil, false),
 				target: New("", "test error", nil, false),
@@ -431,7 +431,7 @@ func TestAs(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "goError comparison when error type is specified",
+			name: "GoError comparison when error type is specified",
 			args: args{
 				err:    New("", "test error", &NotFound, false),
 				target: New("", "test error", &NotFound, false),
@@ -439,7 +439,7 @@ func TestAs(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "goError comparison when error different type is specified",
+			name: "GoError comparison when error different type is specified",
 			args: args{
 				err:    New("", "test error", &BadRequest, false),
 				target: New("", "test error", &NotFound, false),
@@ -447,7 +447,7 @@ func TestAs(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "goError comparison with generic go error",
+			name: "GoError comparison with generic go error",
 			args: args{
 				err:    New("", "test error", &NotFound, false),
 				target: fmt.Errorf("test error"),

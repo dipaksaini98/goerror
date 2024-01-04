@@ -4,29 +4,29 @@ import (
 	"errors"
 )
 
-type goError struct {
-	errorType     Type
-	originalError error
-	title         string
-	message       string
-	context       context
-	display       bool
-	trace         []error
+type GoError struct {
+	ErrorType     Type
+	OriginalError error
+	Title         string
+	Message       string
+	Context       Context
+	Display       bool
+	Trace         []error
 }
 
-type context struct {
+type Context struct {
 	Key   interface{}
 	Value interface{}
 }
 
 // Error implements the Error interface required by Go
-func (e *goError) Error() string {
-	return e.originalError.Error()
+func (e *GoError) Error() string {
+	return e.OriginalError.Error()
 }
 
 // Unwrap implements the Unwrap interface required by Go
-func (e *goError) Unwrap() error {
-	return errors.Unwrap(e.originalError)
+func (e *GoError) Unwrap() error {
+	return errors.Unwrap(e.OriginalError)
 }
 
 // New returns new error
@@ -48,7 +48,7 @@ func Wrap(err error, systemErr error, title string, msg string, errorType *Type,
 
 // Unwrap unwraps an error
 func Unwrap(err error) error {
-	if goErr, ok := err.(*goError); ok {
+	if goErr, ok := err.(*GoError); ok {
 		return goErr.Unwrap()
 	}
 	return errors.Unwrap(err)
@@ -61,9 +61,9 @@ func Is(err, target error) bool {
 
 // As implements the As interface defined in go specification
 func As(err error, target error) bool {
-	if goErr, ok := err.(*goError); ok {
-		if targetGoErr, ok1 := target.(*goError); ok1 {
-			return goErr.errorType == targetGoErr.errorType
+	if goErr, ok := err.(*GoError); ok {
+		if targetGoErr, ok1 := target.(*GoError); ok1 {
+			return goErr.ErrorType == targetGoErr.ErrorType
 		}
 		return false
 	}
@@ -77,36 +77,36 @@ func Error(err error) string {
 
 // SetType add/change the error type
 func SetType(err error, t Type) error {
-	if customErr, ok := err.(*goError); ok {
-		customErr.errorType = t
+	if customErr, ok := err.(*GoError); ok {
+		customErr.ErrorType = t
 		return customErr
 	}
-	return &goError{errorType: t, originalError: err}
+	return &GoError{ErrorType: t, OriginalError: err}
 }
 
 // GetType returns the error type
 func GetType(err error) Type {
-	if goErr, ok := err.(*goError); ok {
-		return goErr.errorType
+	if goErr, ok := err.(*GoError); ok {
+		return goErr.ErrorType
 	}
 	return NoType
 }
 
 // SetContext adds context to the error
 func SetContext(err error, key, value interface{}) error {
-	ctx := context{key, value}
-	if customErr, ok := err.(*goError); ok {
-		customErr.context = ctx
+	ctx := Context{key, value}
+	if customErr, ok := err.(*GoError); ok {
+		customErr.Context = ctx
 		return customErr
 	}
-	return &goError{errorType: NoType, originalError: err, context: ctx}
+	return &GoError{ErrorType: NoType, OriginalError: err, Context: ctx}
 }
 
 // GetContext returns the error context
 func GetContext(err error) map[string]interface{} {
-	emptyCtx := context{}
-	if customErr, ok := err.(*goError); ok && customErr.context != emptyCtx {
-		return map[string]interface{}{"field": customErr.context.Key, "message": customErr.context.Value}
+	emptyCtx := Context{}
+	if customErr, ok := err.(*GoError); ok && customErr.Context != emptyCtx {
+		return map[string]interface{}{"field": customErr.Context.Key, "message": customErr.Context.Value}
 	}
 	return nil
 }

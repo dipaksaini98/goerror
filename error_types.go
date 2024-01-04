@@ -26,14 +26,14 @@ var (
 
 // new creates a new custom error object
 func (errType Type) new(title string, msg string, display bool) error {
-	err := &goError{originalError: errors.New(msg), errorType: errType, display: display, message: msg, title: title}
-	err.trace = append(err.trace, err)
+	err := &GoError{OriginalError: errors.New(msg), ErrorType: errType, Display: display, Message: msg, Title: title}
+	err.Trace = append(err.Trace, err)
 	return err
 }
 
 // wrap wraps context with an error object
 func (errType Type) wrap(err error, systemErr error, title string, msg string, display bool) error {
-	newErr := &goError{errorType: errType, originalError: systemErr, display: display, message: msg, title: title}
-	err.(*goError).trace = append(err.(*goError).trace, newErr)
+	newErr := &GoError{ErrorType: errType, OriginalError: systemErr, Display: display, Message: msg, Title: title}
+	err.(*GoError).Trace = append(err.(*GoError).Trace, newErr)
 	return err
 }

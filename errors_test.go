@@ -25,7 +25,7 @@ func TestNew(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := New(nil, tt.args.msg, nil, false)
+			err := New("", tt.args.msg, nil, false)
 			assert.Error(t, err)
 			assert.Equal(t, tt.args.msg, err.Error())
 			assert.Equal(t, NoType, GetType(err))
@@ -53,7 +53,7 @@ func TestNewWithCustomErrorType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := New(nil, tt.args.msg, &CustomType, false)
+			err := New("", tt.args.msg, &CustomType, false)
 			assert.Error(t, err)
 			assert.Equal(t, tt.args.msg, err.Error())
 			assert.Equal(t, CustomType, GetType(err))
@@ -73,14 +73,14 @@ func TestWrap(t *testing.T) {
 		{
 			name: "one level wrapped error",
 			args: args{
-				err: New(nil, "original error", nil, false),
+				err: New("", "original error", nil, false),
 				msg: "child error",
 			},
 		},
 		{
 			name: "two level wrapped error",
 			args: args{
-				err: Wrap(New(nil, "original error", nil, false), nil, "child error", nil, false),
+				err: Wrap(New("", "original error", nil, false), nil, "", "child error", nil, false),
 				msg: "child error 2",
 			},
 		},
@@ -94,7 +94,7 @@ func TestWrap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Wrap(tt.args.err, nil, tt.args.msg, nil, false); err != nil {
+			if err := Wrap(tt.args.err, nil, "", tt.args.msg, nil, false); err != nil {
 				switch tt.name {
 				case "one level wrapped error":
 					assert.Equal(t, "child error: original error", err.Error())
@@ -130,7 +130,7 @@ func TestWrapWithCustomErrorType(t *testing.T) {
 		{
 			name: "one level wrapped error",
 			args: args{
-				err: New(nil, "original error", &CustomType, false),
+				err: New("", "original error", &CustomType, false),
 				msg: "child error",
 			},
 			wantErr: false,
@@ -138,7 +138,7 @@ func TestWrapWithCustomErrorType(t *testing.T) {
 		{
 			name: "two level wrapped error",
 			args: args{
-				err: Wrap(New(nil, "original error", &CustomType, false), nil, "child error", &CustomType, false),
+				err: Wrap(New("", "original error", &CustomType, false), nil, "", "child error", &CustomType, false),
 				msg: "child error 2",
 			},
 			wantErr: false,
@@ -146,7 +146,7 @@ func TestWrapWithCustomErrorType(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Wrap(tt.args.err, nil, tt.args.msg, nil, false); (err != nil) != tt.wantErr {
+			if err := Wrap(tt.args.err, nil, "", tt.args.msg, nil, false); (err != nil) != tt.wantErr {
 				switch tt.name {
 				case "one level wrapped error":
 					assert.Equal(t, "child error: original error", err.Error())
@@ -182,7 +182,7 @@ func TestSetContext(t *testing.T) {
 		{
 			name: "add single valued context",
 			args: args{
-				err:   New(nil, "testing error context", nil, false),
+				err:   New("", "testing error context", nil, false),
 				key:   "Key1",
 				value: "Value1",
 			},
@@ -221,14 +221,14 @@ func TestGetType(t *testing.T) {
 		{
 			name: "test get type when no type is passed",
 			args: args{
-				err: New(nil, "NoType error", nil, false),
+				err: New("", "NoType error", nil, false),
 			},
 			want: NoType,
 		},
 		{
 			name: "test get type when error type is passed",
 			args: args{
-				err: New(nil, "DBError type", &err, false),
+				err: New("", "DBError type", &err, false),
 			},
 			want: DBError,
 		},
@@ -242,7 +242,7 @@ func TestGetType(t *testing.T) {
 		{
 			name: "test get type when custom error type is passed",
 			args: args{
-				err: New(nil, "DBError type", &CustomErrorType, false),
+				err: New("", "DBError type", &CustomErrorType, false),
 			},
 			want: CustomErrorType,
 		},
@@ -279,7 +279,7 @@ func TestSetType(t *testing.T) {
 		{
 			name: "Set different error type",
 			args: args{
-				err: New(nil, "resource not found", &br, false),
+				err: New("", "resource not found", &br, false),
 				t:   nf,
 			},
 			want: nf,
@@ -287,7 +287,7 @@ func TestSetType(t *testing.T) {
 		{
 			name: "Set error type for NoType error",
 			args: args{
-				err: New(nil, "resource not found", nil, false),
+				err: New("", "resource not found", nil, false),
 				t:   br,
 			},
 			want: br,
@@ -320,14 +320,14 @@ func TestGetContext(t *testing.T) {
 		{
 			name: "Get error context when no context is set",
 			args: args{
-				err: New(nil, "generic error", nil, false),
+				err: New("", "generic error", nil, false),
 			},
 			want: nil,
 		},
 		{
 			name: "Get error context when no context is set",
 			args: args{
-				err: SetContext(New(nil, "request error", nil, false), "Key1", "Value1"),
+				err: SetContext(New("", "request error", nil, false), "Key1", "Value1"),
 			},
 			want: map[string]interface{}{"field": "Key1", "message": "Value1"},
 		},
@@ -343,7 +343,7 @@ func TestGetContext(t *testing.T) {
 
 func TestIs(t *testing.T) {
 	tErr := fmt.Errorf("test error")
-	goTErr := New(nil, "test error", nil, false)
+	goTErr := New("", "test error", nil, false)
 	type args struct {
 		err    error
 		target error
@@ -356,8 +356,8 @@ func TestIs(t *testing.T) {
 		{
 			name: "goerror comparison for same error",
 			args: args{
-				err:    New(nil, "test error", nil, false),
-				target: New(nil, "test error", nil, false),
+				err:    New("", "test error", nil, false),
+				target: New("", "test error", nil, false),
 			},
 			want: false,
 		},
@@ -372,8 +372,8 @@ func TestIs(t *testing.T) {
 		{
 			name: "goerror comparison for different error",
 			args: args{
-				err:    New(nil, "test error", nil, false),
-				target: New(nil, "test error 2", nil, false),
+				err:    New("", "test error", nil, false),
+				target: New("", "test error 2", nil, false),
 			},
 			want: false,
 		},
@@ -425,31 +425,31 @@ func TestAs(t *testing.T) {
 		{
 			name: "goError comparison for no type specified",
 			args: args{
-				err:    New(nil, "test error", nil, false),
-				target: New(nil, "test error", nil, false),
+				err:    New("", "test error", nil, false),
+				target: New("", "test error", nil, false),
 			},
 			want: true,
 		},
 		{
 			name: "goError comparison when error type is specified",
 			args: args{
-				err:    New(nil, "test error", &NotFound, false),
-				target: New(nil, "test error", &NotFound, false),
+				err:    New("", "test error", &NotFound, false),
+				target: New("", "test error", &NotFound, false),
 			},
 			want: true,
 		},
 		{
 			name: "goError comparison when error different type is specified",
 			args: args{
-				err:    New(nil, "test error", &BadRequest, false),
-				target: New(nil, "test error", &NotFound, false),
+				err:    New("", "test error", &BadRequest, false),
+				target: New("", "test error", &NotFound, false),
 			},
 			want: false,
 		},
 		{
 			name: "goError comparison with generic go error",
 			args: args{
-				err:    New(nil, "test error", &NotFound, false),
+				err:    New("", "test error", &NotFound, false),
 				target: fmt.Errorf("test error"),
 			},
 			want: false,
@@ -484,7 +484,7 @@ func TestError(t *testing.T) {
 		{
 			name: "getting error message",
 			args: args{
-				New(nil, "test-error", nil, false),
+				New("", "test-error", nil, false),
 			},
 			want: "test-error",
 		},

@@ -7,6 +7,7 @@ import (
 type goError struct {
 	errorType     Type
 	originalError error
+	title         string
 	message       string
 	context       context
 	display       bool
@@ -29,24 +30,20 @@ func (e *goError) Unwrap() error {
 }
 
 // New returns new error
-func New(systemErr error, msg string, errorType *Type, display bool) error {
-	var sysErr error
-	if systemErr != nil {
-		sysErr = systemErr
-	}
+func New(title string, msg string, errorType *Type, display bool) error {
 	if errorType != nil {
-		return errorType.new(sysErr, msg, display)
+		return errorType.new(title, msg, display)
 	} else {
-		return NoType.new(sysErr, msg, display)
+		return NoType.new(title, msg, display)
 	}
 }
 
 // Wrap wraps an error
-func Wrap(err error, systemErr error, msg string, errorType *Type, display bool) error {
+func Wrap(err error, systemErr error, title string, msg string, errorType *Type, display bool) error {
 	if errorType != nil {
-		return errorType.wrap(err, systemErr, msg, display)
+		return errorType.wrap(err, systemErr, title, msg, display)
 	}
-	return NoType.wrap(err, systemErr, msg, display)
+	return NoType.wrap(err, systemErr, title, msg, display)
 }
 
 // Unwrap unwraps an error

@@ -25,20 +25,15 @@ var (
 )
 
 // new creates a new custom error object
-func (errType Type) new(systemErr error, msg string, display bool) error {
-	err := &goError{errorType: errType, display: display, message: msg}
-	if systemErr != nil {
-		err.originalError = systemErr
-	} else {
-		err.originalError = errors.New(msg)
-	}
+func (errType Type) new(title string, msg string, display bool) error {
+	err := &goError{originalError: errors.New(msg), errorType: errType, display: display, message: msg, title: title}
 	err.trace = append(err.trace, err)
 	return err
 }
 
 // wrap wraps context with an error object
-func (errType Type) wrap(err error, systemErr error, msg string, display bool) error {
-	newErr := &goError{errorType: errType, originalError: systemErr, display: display, message: msg}
+func (errType Type) wrap(err error, systemErr error, title string, msg string, display bool) error {
+	newErr := &goError{errorType: errType, originalError: systemErr, display: display, message: msg, title: title}
 	err.(*goError).trace = append(err.(*goError).trace, newErr)
 	return err
 }

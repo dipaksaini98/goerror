@@ -27,7 +27,7 @@ Let's look at some code snippets. But before this, make sure to download the pac
 ### Create error
 Syntax:
 
-	New(message string, error_type Type) error
+	New(title string, msg string, errorType *Type, display bool) error
 
 
  #### 1. Create an error without an error type
@@ -35,7 +35,7 @@ Syntax:
 
 Example:
 
-    err := errors.New("error message", nil)
+    err := errors.New("error title", "error message", nil, false)
     fmt.Println(err)
     >> Error message
 
@@ -44,9 +44,26 @@ Example:
 #### 2. Create an error with an error type
 
 Example:
-	
 
-    err :=  errors.New("error message", &errors.BadRequest)
+    err :=  errors.New("error title", "error message", &errors.BadRequest, true)
+    fmt.Println(err)
+    >> Error message
+
+> Note: when the display prop is set to "true", it tell the front-end to dislay this error message.
+
+### Wrap an error
+Syntax:
+
+	New(err error, systemErr error, title string, msg string, errorType *Type, display bool) error
+
+#### 2. Wrap an existing error with a new error
+
+Example:
+
+    e := errors.New("error title", "error message", nil, false)
+
+    err :=  errors.Wrap(e, systemErr, "error title", "error message", &errors.BadRequest, true)
+    
     fmt.Println(err)
     >> Error message
 
@@ -96,6 +113,7 @@ Example:
 	 5. Unauthorized
 	 6. PermissionDenied
 	 7. SomethingWentWrong
+  	 8. InternalServerError
 
 ### Get error type
 

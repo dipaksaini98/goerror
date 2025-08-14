@@ -17,6 +17,16 @@ func Map(err error) map[string]interface{} {
 	errMap["type"] = GetType(err)
 	errMap["display"] = GetDisplay(err)
 
+	// check if trace exists in the error
+	if trace := GetTrace(err); trace != nil {
+		errMap["trace"] = GetTrace(err)
+	}
+
+	// if original error exists, add it to the map
+	if originalErr := GetOriginalError(err); originalErr != nil && originalErr != err {
+		errMap["original_error"] = originalErr.Error()
+	}
+
 	return errMap
 }
 

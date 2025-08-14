@@ -108,6 +108,22 @@ func GetDisplay(err error) bool {
 	return false
 }
 
+// GetTrace returns the error trace
+func GetTrace(err error) []error {
+	if goErr, ok := err.(*GoError); ok {
+		return goErr.Trace
+	}
+	return nil
+}
+
+// GetOriginalError returns the original error
+func GetOriginalError(err error) error {
+	if goErr, ok := err.(*GoError); ok {
+		return goErr.OriginalError
+	}
+	return err
+}
+
 // SetContext adds context to the error
 func SetContext(err error, key, value interface{}) error {
 	ctx := Context{key, value}

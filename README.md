@@ -1,4 +1,4 @@
-# GoError v1.0.0
+# GoError v1.0.1
 
   
 **GoError** is a simple and pluggable Go package that allows developers to create and handle errors in Go more efficiently and gracefully, while also preserving the context of every error. 

@@ -19,7 +19,21 @@ func Map(err error) map[string]interface{} {
 
 	// check if trace exists in the error
 	if trace := GetTrace(err); trace != nil {
-		errMap["trace"] = GetTrace(err)
+		var traceObjects []map[string]interface{}
+		for _, traceErr := range trace {
+			traceObj := map[string]interface{}{
+				"title":   GetTitle(traceErr),
+				"message": traceErr.Error(),
+				"type":    GetType(traceErr),
+				"display": GetDisplay(traceErr),
+			}
+			// if original error exists, add it to the trace object
+			if originalErr := GetOriginalError(traceErr); originalErr != nil && originalErr != traceErr {
+				traceObj["original_error"] = originalErr.Error()
+			}
+			traceObjects = append(traceObjects, traceObj)
+		}
+		errMap["trace"] = traceObjects
 	}
 
 	// if original error exists, add it to the map

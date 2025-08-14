@@ -92,6 +92,22 @@ func GetType(err error) Type {
 	return NoType
 }
 
+// GetTitle returns the error title
+func GetTitle(err error) string {
+	if goErr, ok := err.(*GoError); ok {
+		return goErr.Title
+	}
+	return ""
+}
+
+// GetDisplay returns whether the error should be displayed
+func GetDisplay(err error) bool {
+	if goErr, ok := err.(*GoError); ok {
+		return goErr.Display
+	}
+	return false
+}
+
 // SetContext adds context to the error
 func SetContext(err error, key, value interface{}) error {
 	ctx := Context{key, value}

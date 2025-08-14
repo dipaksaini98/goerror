@@ -12,8 +12,11 @@ func Map(err error) map[string]interface{} {
 		errMap["type"] = GetType(customErr)
 		return errMap
 	}
+	errMap["title"] = GetTitle(err)
 	errMap["message"] = err.Error()
 	errMap["type"] = GetType(err)
+	errMap["display"] = GetDisplay(err)
+
 	return errMap
 }
 
